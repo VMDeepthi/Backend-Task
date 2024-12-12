@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Information</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 320px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+        }
+        
+        .location {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+        
+        .ip-address {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #e74c3c;
+        }
+        
+        .weather {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .temperature {
+            font-size: 2em;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .description {
+            font-style: italic;
+            color: #95a5a6;
+        }
+        
+        .humidity {
+            font-size: 1.2em;
+            color: #16a085;
+        }
+        
+        .error {
+            color: #e74c3c;
+        }
+        
+        .loading {
+            font-size: 1.2em;
+            color: #f39c12;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Weather Information</h1>
+        <div class="ip-address" id="ip-address">Loading IP address...</div>
+        <div class="location" id="location">Loading location...</div>
+        <div class="weather" id="weather">Loading weather...</div>
+        <div class="error" id="error"></div>
+    </div>
+
+    <script>
+        // Fetch weather data when the page loads
+        window.onload = function() {
+            fetch('/get_weather/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('error').innerText = data.error;
+                        document.getElementById('ip-address').style.display = 'none';
+                        document.getElementById('location').style.display = 'none';
+                        document.getElementById('weather').style.display = 'none';
+                    } else {
+                        document.getElementById('ip-address').innerText = `IP Address: ${data.ip}`;
+                        document.getElementById('location').innerText = `Location: ${data.location.city}, ${data.location.country}`;
+                        document.getElementById('weather').innerHTML = `
+                        <div class="temperature">${data.weather.temperature}°C</div>
+                        <div class="description">${data.weather.description}</div>
+                        <div class="humidity">Humidity: ${data.weather.humidity}%</div>
+                    `;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('error').innerText = 'Error fetching weather data';
+                });
+        };
+    </script>
+
+</body>
+
+</html>
